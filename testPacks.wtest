@@ -1,1 +1,163 @@
-// completar
+import packs.*
+import coordinadores.*
+import beneficioEspecial.*
+
+describe "etapa 1" {
+    const franco = new Coordinador(
+        cantidadDeViajes = 2,
+        estaMotivado = true,
+        rol= guia,
+        experiencia= 3
+    )
+
+    const packNacional1 = new PackNacional(
+         duracion = 2,
+         precioBase = 100,
+        coordinador = franco,
+        provinciaDestino = "buenos aires",
+        actividades =["salto en japi", "sky sobre hielo"] 
+    )
+    const beneficio1 = new Beneficios(
+        tipo= "Traslados privados",
+        costo = 100,
+        estaVigente =true
+
+
+    )
+        const beneficio2 = new Beneficios(
+        tipo= "acceso a salas VIP",
+        costo = 200,
+        estaVigente =true
+
+
+    )
+    const packNacional2 = new PackNacional(
+        duracion = 4,
+        precioBase = 200,
+        coordinador = franco,
+        beneficiosEspeciales = #{beneficio1, beneficio2},
+        provinciaDestino = "buenos aires",
+        actividades = []
+    )
+    const packInternacional1 = new PackInternacional(
+    duracion =3,
+    precioBase=200,
+    coordinador=franco,
+    paisDestino="argentina",
+    cantidadDeEscalas=4,
+    esDeInteres=true,
+    escalas = 3
+    )
+  test "un pack nacional sin beneficios vigentes devuelve el mismo precio base" {
+    assert.equals(100, packNacional1.valorDelPack())
+  }
+  test "Un pack nacional con 2 beneficios vigentes suma correctamente sus costos al precio base." {
+    assert.equals(500, packNacional2.valorDelPack())
+  }
+  test "Un pack internacional sin beneficios vigentes calcula correctamente el total con el 20% de recargo." {
+    assert.equals(240, packInternacional1.valorDelPack())
+  }
+}
+describe "etapa2" {
+        const jose = new Coordinador(
+        cantidadDeViajes = 21,
+        estaMotivado = true,
+        rol= guia,
+        experiencia= 4
+    )
+        const pepe = new Coordinador(
+        cantidadDeViajes = 2,
+        estaMotivado = true,
+        rol= asistenteLogistico,
+        experiencia= 4
+    )
+            const juan = new Coordinador(
+        cantidadDeViajes = 23,
+        estaMotivado = true,
+        rol= acompaniante,
+        experiencia= 4
+    )
+  test "Un guía motivado con 21 viajes realizados es considerado altamente calificado." {
+    assert.that(jose.esAltamenteCalificado())
+  }
+  test "Un asistente logístico con menos de 3 años de experiencia no es calificado, aunque tenga muchos viajes." {
+    assert.notThat(pepe.esAltamenteCalificado())
+  }
+  test "Un acompañante con cualquier cantidad de viajes es siempre calificado si supera los 20." {
+    assert.that(juan.esAltamenteCalificado())
+  }
+}
+describe "etapa3" {
+        const carlos = new Coordinador(
+        cantidadDeViajes = 23,
+        estaMotivado = true,
+        rol= acompaniante,
+        experiencia= 4
+    )
+        const packNacional3 = new PackNacional(
+         duracion = 11,
+         precioBase = 100,
+        coordinador = carlos,
+        provinciaDestino = "buenos aires",
+        actividades =["salto en japi", "sky sobre hielo"] 
+    )
+        const packInternacional3 = new PackInternacional(
+    duracion =21,
+    precioBase=200,
+    coordinador=carlos,
+    paisDestino="argentina",
+    cantidadDeEscalas=4,
+    esDeInteres=true,
+    escalas = 0
+    )
+
+    test "un pack nacional con un asistente con  11 dias de duracion y un coordinador altamente calificado es premium" {
+        assert.that(packNacional3.esPremium())
+    }
+    test "un pack internacional con un lugar de interes, mas de 20 dias de duracion y sin ninguna escala es premium " {
+      assert.that(packInternacional3.esPremium())
+    }
+}
+describe "etapa4" {
+        const carlos2 = new Coordinador(
+        cantidadDeViajes = 23,
+        estaMotivado = true,
+        rol= acompaniante,
+        experiencia= 4
+    )
+        const beneficio1 = new Beneficios(
+        tipo= "Traslados privados",
+        costo = 100,
+        estaVigente =true
+
+
+    )
+        const beneficio2 = new Beneficios(
+        tipo= "acceso a salas VIP",
+        costo = 200,
+        estaVigente =true
+
+
+    )
+            const beneficio3 = new Beneficios(
+        tipo= "acceso a salas VIP",
+        costo = 200,
+        estaVigente =true
+
+
+    )
+    const packProvincial1= new PackProvincial(
+        duracion = 4,
+        precioBase = 100,
+        coordinador = carlos2,
+        beneficiosEspeciales = #{beneficio1, beneficio2, beneficio3},
+        provinciaDestino = "buenos aires",
+        actividades = ["cajack","irDeJoda","tuVieja","tuhermana"],
+        ciudadesAVisitar =["buenos aires","moron","hurlingam","ituzaingo","chacabuco","otra"]
+    )
+  test "pack provincial con al menos 4 actividades para hacer, mas de 5 ciudades a visitar y 3 beneficios vigentes es premium y al ser premium suma 5%" {
+    assert.that(packProvincial1.esPremium())
+    assert.equals(630, packProvincial1.valorDelPack())
+  }
+
+}
